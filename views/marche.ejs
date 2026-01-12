@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Comment ça marche - VoteZ</title>
+  <link rel="shortcut icon" href="/images/voter.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    /* Fond animé */
+    body {
+      background: linear-gradient(-45deg, #f8f9fa, #e0f7fa, #ffe6f0, #d2dff3);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 60px;
+      font-weight: 900;
+      color: #333;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .step-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    }
+
+    .step-icon {
+      font-size: 4rem;
+      color: #00bcd4;
+      margin-bottom: 15px;
+      transition: transform 0.3s;
+    }
+
+    .step-card:hover .step-icon {
+      transform: rotate(10deg) scale(1.2);
+    }
+
+    .step-number {
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      background-color: #ff4081;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .step-desc {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    /* Bouton retour accueil */
+    .btn-home {
+      display: block;
+      margin: 50px auto 0 auto;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      transition: background-color 0.3s, transform 0.2s;
+      background-color: #00bcd4;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .btn-home:hover {
+      background-color: #007c91;
+      transform: scale(1.05);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      .step-card {
+        padding: 20px 15px;
+      }
+      .step-icon {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Comment ça marche ?</h1>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <i class="bi bi-person-circle step-icon"></i>
+      <div class="step-title">Inscription</div>
+      <div class="step-desc">
+        Créez votre compte rapidement avec votre email et mot de passe. 
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <i class="bi bi-card-checklist step-icon"></i>
+      <div class="step-title">Choisissez votre candidat</div>
+      <div class="step-desc">
+        Parcourez la liste des candidats et sélectionnez celui que vous soutenez.
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <i class="bi bi-check2-square step-icon"></i>
+      <div class="step-title">Votez</div>
+      <div class="step-desc">
+        Validez votre vote en toute sécurité. Chaque utilisateur ne peut voter qu'une seule fois.
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <i class="bi bi-bar-chart-line step-icon"></i>
+      <div class="step-title">Consultez les résultats</div>
+      <div class="step-desc">
+        Visualisez les résultats en temps réel grâce à notre graphique interactif et coloré.
+      </div>
+    </div>
+  </div>
+
+  <a href="/" class="btn btn-home">Retour à l'accueil</a>
+
+</body>
+</html>

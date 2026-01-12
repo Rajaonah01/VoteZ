@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Résultats VoteZ</title>
+  <link rel="shortcut icon" href="/images/voter.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Corps de la page */
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #333;
+      font-weight: 700;
+    }
+
+    /* Conteneur du graphique */
+    .chart-container {
+      width: 100%;
+      max-width: 900px; /* plus large sur PC */
+      height: 400px;    /* hauteur par défaut */
+      margin: 0 auto 30px auto;
+    }
+
+    /* Responsive tablette / mobile */
+    @media (max-width: 768px) {
+      .chart-container {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .chart-container {
+        height: 250px;
+      }
+    }
+
+    /* Boutons */
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .btn {
+      min-width: 150px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Résultats du Vote</h1>
+
+  <div class="chart-container">
+    <canvas id="resultatsChart"></canvas>
+  </div>
+
+  <div class="btn-group">
+    <a href="/vote" class="btn btn-primary">Retour au Vote</a>
+    <a href="/logout" class="btn btn-danger">Se Déconnecter</a>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('resultatsChart').getContext('2d');
+
+    // Données dynamiques depuis le serveur
+    const labels = <%- JSON.stringify(results.map(r => r.nom)) %>;
+    const votes = <%- JSON.stringify(results.map(r => r.total)) %>;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Nombre de votes',
+          data: votes,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1,
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Votes par candidat',
+            font: { size: 20, weight: 'bold' }
+          },
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
