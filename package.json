@@ -1,15 +1,21 @@
 {
   "name": "vote",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Application de vote en ligne avec Node.js, Express et MySQL",
+  "main": "serveur.js",
   "type": "commonjs",
+  "scripts": {
+    "start": "node serveur.js",
+    "dev": "nodemon serveur.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "vote",
+    "mysql"
+  ],
+  "author": "Ton Nom",
+  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
