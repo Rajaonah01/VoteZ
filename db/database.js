@@ -1,28 +1,27 @@
-require('dotenv').config();
 const mysql = require('mysql2');
 
-const connection = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+const pool = mysql.createPool({
+  host: process.env.MYSQL_ADDON_HOST,
+  user: process.env.MYSQL_ADDON_USER,
+  password: process.env.MYSQL_ADDON_PASSWORD,
+  database: process.env.MYSQL_ADDON_DB,
+  port: process.env.MYSQL_ADDON_PORT || 3306,
+
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 3,   // 🔴 MAX 3 (OBLIGATOIRE)
   queueLimit: 0
 });
 
-// Test
-connection.getConnection((err, conn) => {
+pool.getConnection((err, connection) => {
   if (err) {
     console.error('❌ Erreur MySQL:', err.message);
   } else {
-    console.log('✅ MySQL Clever Cloud connecté');
-    conn.release();
+    console.log('✅ Pool MySQL Clever Cloud connecté');
+    connection.release();
   }
 });
 
-module.exports = connection;
+module.exports = pool;
 
 
 
