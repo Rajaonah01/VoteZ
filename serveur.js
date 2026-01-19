@@ -1,15 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 const path = require('path');
-
-const app = express();
-const port = 3000;
 
 // =====================
 // Base de données
 // =====================
-const connection = require('./db/database');
+const connection = require('./db/database'); // connexion Clever Cloud
+
+// =====================
+// App
+// =====================
+const app = express();
+const port = process.env.PORT || 3000;
 
 // =====================
 // Middleware
@@ -19,10 +23,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
 // =====================
-// Session
+// Session MySQL
 // =====================
+const sessionStore = new MySQLStore({}, connection.promise());
+
 app.use(session({
+  key: 'votez_session',
   secret: 'votezSecretKey',
+  store: sessionStore,
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 1000 * 60 * 60 } // 1 heure
@@ -35,11 +43,8 @@ const authRoutes = require('./routes/auth');
 const voteRoutes = require('./routes/vote');
 const adminCandidatsRoutes = require('./routes/admin_candidats');
 
-// =====================
-// Utilisation routes
-// =====================
-app.use('/', authRoutes);                  // login / register
-app.use('/vote', voteRoutes);             // vote utilisateur
+app.use('/', authRoutes);                     // login / register
+app.use('/vote', voteRoutes);                // vote utilisateur
 app.use('/admin/candidats', adminCandidatsRoutes); // gestion candidats admin
 
 // =====================
@@ -84,7 +89,7 @@ app.get('/logout', (req, res) => {
       console.error(err);
       return res.redirect('/');
     }
-    res.clearCookie('connect.sid');
+    res.clearCookie('votez_session');
     res.redirect('/');
   });
 });
