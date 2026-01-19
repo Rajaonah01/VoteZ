@@ -5,9 +5,9 @@ const MySQLStore = require('express-mysql-session')(session);
 const path = require('path');
 
 // =====================
-// Base de données
+// Base de données (POOL)
 // =====================
-const connection = require('./db/database'); // connexion Clever Cloud
+const db = require('./db/database');
 
 // =====================
 // App
@@ -15,25 +15,41 @@ const connection = require('./db/database'); // connexion Clever Cloud
 const app = express();
 const port = process.env.PORT || 3000;
 
+// 🔥 OBLIGATOIRE POUR RENDER
+app.set('trust proxy', 1);
+
 // =====================
 // Middleware
 // =====================
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
 // =====================
-// Session MySQL
+// Session MySQL (STABLE)
 // =====================
-const sessionStore = new MySQLStore({}, connection.promise());
+const sessionStore = new MySQLStore(
+  {
+    clearExpired: true,
+    checkExpirationInterval: 900000, // 15 min
+    expiration: 1000 * 60 * 60 // 1 heure
+  },
+  db
+);
 
 app.use(session({
-  key: 'votez_session',
-  secret: 'votezSecretKey',
+  name: 'votez_session',
+  secret: process.env.SESSION_SECRET || 'votezSecretKey',
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 } // 1 heure
+  cookie: {
+    secure: false, // Render gère le HTTPS
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60
+  }
 }));
 
 // =====================
@@ -43,9 +59,9 @@ const authRoutes = require('./routes/auth');
 const voteRoutes = require('./routes/vote');
 const adminCandidatsRoutes = require('./routes/admin_candidats');
 
-app.use('/', authRoutes);                     // login / register
-app.use('/vote', voteRoutes);                // vote utilisateur
-app.use('/admin/candidats', adminCandidatsRoutes); // gestion candidats admin
+app.use('/', authRoutes);
+app.use('/vote', voteRoutes);
+app.use('/admin/candidats', adminCandidatsRoutes);
 
 // =====================
 // ACCUEIL
@@ -71,10 +87,10 @@ app.get('/resultats', (req, res) => {
     GROUP BY c.id
   `;
 
-  connection.query(query, (err, results) => {
+  db.query(query, (err, results) => {
     if (err) {
-      console.error(err);
-      return res.send('Erreur serveur');
+      console.error('Erreur résultats:', err);
+      return res.status(500).send('Erreur serveur');
     }
     res.render('resultats', { results });
   });
@@ -84,19 +100,23 @@ app.get('/resultats', (req, res) => {
 // LOGOUT
 // =====================
 app.get('/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      console.error(err);
-      return res.redirect('/');
-    }
+  req.session.destroy(() => {
     res.clearCookie('votez_session');
     res.redirect('/');
   });
 });
 
 // =====================
+// GESTION ERREURS GLOBALES
+// =====================
+app.use((err, req, res, next) => {
+  console.error('Erreur serveur:', err);
+  res.status(500).send('Erreur interne');
+});
+
+// =====================
 // Serveur
 // =====================
 app.listen(port, () => {
-  console.log(`🚀 VoteZ en ligne sur http://localhost:${port}`);
+  console.log(`🚀 VoteZ lancé sur le port ${port}`);
 });

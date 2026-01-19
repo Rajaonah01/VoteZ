@@ -1,24 +1,56 @@
+require('dotenv').config();
 const mysql = require('mysql2');
 
-// Connexion à Clever Cloud MySQL
-const connection = mysql.createConnection({
-  host: 'bheaahnugixnjv8zmvxo-mysql.services.clever-cloud.com',
-  user: 'udfstbiuf1t2cnlo',
-  password: 'QzQgHl8VQsx1LalNYOPK',
-  database: 'bheaahnugixnjv8zmvxo',
-  port: 3306
+const connection = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-// Test de connexion
-connection.connect(err => {
+// Test
+connection.getConnection((err, conn) => {
   if (err) {
-    console.error('Erreur de connexion MySQL Clever Cloud:', err);
-    return;
+    console.error('❌ Erreur MySQL:', err.message);
+  } else {
+    console.log('✅ MySQL Clever Cloud connecté');
+    conn.release();
   }
-  console.log('✅ Connecté à MySQL Clever Cloud !');
 });
 
 module.exports = connection;
+
+
+
+// const mysql = require('mysql2');
+
+// // ✅ POOL MySQL (stable pour Render + Clever Cloud)
+// const pool = mysql.createPool({
+//   host: process.env.DB_HOST || 'bheaahnugixnjv8zmvxo-mysql.services.clever-cloud.com',
+//   user: process.env.DB_USER || 'udfstbiuf1t2cnlo',
+//   password: process.env.DB_PASSWORD || 'QzQgHl8VQsx1LalNYOPK',
+//   database: process.env.DB_NAME || 'bheaahnugixnjv8zmvxo',
+//   port: process.env.DB_PORT || 3306,
+
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0
+// });
+
+// // ✅ Test simple (sans fermer la connexion)
+// pool.query('SELECT 1', (err) => {
+//   if (err) {
+//     console.error('❌ MySQL Clever Cloud non connecté:', err);
+//   } else {
+//     console.log('✅ Pool MySQL Clever Cloud connecté');
+//   }
+// });
+
+// module.exports = pool;
 
 // PORT CONNECTER SUR CLEVER CLOUD
 // const mysql = require('mysql2');

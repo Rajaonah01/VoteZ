@@ -1,17 +1,15 @@
 function checkAuth(req, res, next) {
-  if (!req.session.user) {
+  if (!req.session || !req.session.user) {
     return res.redirect('/login');
   }
   next();
 }
 
-// Vérifie si l'utilisateur est admin
 function checkAdmin(req, res, next) {
-  if (!req.session.user || !req.session.user.isAdmin) {
-    return res.status(403).send('Accès refusé. Vous devez être admin.');
+  if (!req.session || !req.session.user || req.session.user.isAdmin !== 1) {
+    return res.status(403).render('403'); // ou res.send(...)
   }
   next();
 }
 
 module.exports = { checkAuth, checkAdmin };
-
